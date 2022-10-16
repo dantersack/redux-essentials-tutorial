@@ -1,12 +1,23 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
-import { postAdded } from './postsSlice'
+import { postUpdated } from './postsSlice'
 
-const AddFormPost = () => {
-  const [postData, setPostData] = useState({ title: '', content: '' })
+const EditPostForm = ({ match }) => {
+  const { postId } = match.params
+
+  const post = useSelector((state) =>
+    state.posts.find((post) => post.id === postId)
+  )
+
+  const [postData, setPostData] = useState({
+    title: post.title,
+    content: post.content,
+  })
 
   const dispatch = useDispatch()
+  const history = useHistory()
 
   const handleOnChange = (e) => {
     setPostData({ ...postData, [e.target.name]: e.target.value })
@@ -14,13 +25,19 @@ const AddFormPost = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    dispatch(postAdded(postData))
-    setPostData({ title: '', content: '' })
+    dispatch(
+      postUpdated({
+        id: postId,
+        updatedTitle: postData.title,
+        updatedContent: postData.content,
+      })
+    )
+    history.push(`/posts/${postId}`)
   }
 
   return (
     <section>
-      <h2>Add a New Post</h2>
+      <h2>Edit Post</h2>
       <form onSubmit={handleSubmit}>
         <label htmlFor="title">Post Title:</label>
         <input
@@ -45,4 +62,4 @@ const AddFormPost = () => {
   )
 }
 
-export default AddFormPost
+export default EditPostForm
