@@ -1,6 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
+import ReactionButtons from './ReactButtons'
+
 const SinglePostPage = ({ match }) => {
   const { postId } = match.params
 
@@ -21,6 +23,7 @@ const SinglePostPage = ({ match }) => {
         <h2>{post.title}</h2>
         <p className="post-content">{post.content}</p>
       </article>
+      <ReactionButtons post={post} />
     </section>
   )
 }
